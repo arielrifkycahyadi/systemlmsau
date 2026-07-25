@@ -87,9 +87,9 @@ app.post('/api/generate-curriculum', async (req, res) => {
       apiKey
     );
 
-    // Call YouTube search API for each week
+    // Call YouTube search API for each week in parallel
     if (curriculum && curriculum.weeks) {
-      for (const week of curriculum.weeks) {
+      await Promise.all(curriculum.weeks.map(async (week) => {
         try {
           const searchQuery = week.youtubeSearchQuery || `${courseName} ${week.topic}`;
           week.youtubeVideos = await youtubeService.fetchVideosForQuery(searchQuery, ytApiKey);
@@ -97,7 +97,7 @@ app.post('/api/generate-curriculum', async (req, res) => {
           console.error(`Failed YouTube fetch for Week ${week.weekNum}:`, ytErr.message);
           week.youtubeVideos = youtubeService.getMockVideos(week.topic);
         }
-      }
+      }));
     }
 
     // Save generated syllabus back to DB
