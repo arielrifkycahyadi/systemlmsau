@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AU Learning - AI-Driven Micro-LMS Generator</title>
+  
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Shared Branding Header -->
+  <header class="branding-header">
+    <div class="brand-info">
+      <div class="brand-logo">AU</div>
+      <div class="brand-text">
+        <h1>AU Learning</h1>
+        <span>Alternative Universe Learning by Ariel Usman</span>
+      </div>
+    </div>
+    
+    <!-- Creator Portfolio Badges -->
+    <div class="creator-socials">
+      <a href="https://instagram.com/arielrcun" target="_blank" class="social-badge">
+        <i class="fa-brands fa-instagram"></i> @arielrcun
+      </a>
+      <a href="https://instagram.com/madeai.ariel" target="_blank" class="social-badge">
+        <i class="fa-brands fa-instagram"></i> @madeai.ariel
+      </a>
+      <a href="https://tiktok.com/@maybe.ariel5" target="_blank" class="social-badge">
+        <i class="fa-brands fa-tiktok"></i> @maybe.ariel5
+      </a>
+      <a href="https://artriel-arch.github.io/" target="_blank" class="social-badge">
+        <i class="fa-solid fa-globe"></i> Portfolio
+      </a>
+      <a href="https://arielrifkycahyadi.github.io/" target="_blank" class="social-badge">
+        <i class="fa-solid fa-robot"></i> AI GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast-msg">
+    <i id="toast-icon" class="fa-solid"></i>
+    <span id="toast-text">Success message</span>
+  </div>
+
+  <!-- Main View Container -->
+  <main class="main-content">
+    
+    <!-- AUTH CONTAINER (Hidden after log in) -->
+    <section id="auth-panel" class="auth-wrapper" style="display: flex; justify-content: center; align-items: center; min-height: 60vh;">
+      <div class="auth-card glass-panel" style="width: 100%; max-width: 440px; padding: 2.5rem;">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <h2 style="font-size: 1.5rem; color: white;">Welcome to AU Learning</h2>
+          <p style="color: var(--text-secondary); font-size: 0.85rem; margin-top: 0.25rem;">
+            Sign in or register to launch an AI Micro-LMS site.
+          </p>
+        </div>
+
+        <div class="role-selector" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.5rem;">
+          <button id="role-lecturer-btn" class="role-btn active" onclick="setAuthRole('lecturer')">
+            <i class="fa-solid fa-chalkboard-user"></i> Lecturer
+          </button>
+          <button id="role-student-btn" class="role-btn" onclick="setAuthRole('student')">
+            <i class="fa-solid fa-user-graduate"></i> Student
+          </button>
+        </div>
+
+        <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+          <div class="form-group" id="name-group" style="display: none;">
+            <label for="auth-name">Full Name</label>
+            <input type="text" id="auth-name" class="form-control" placeholder="Ariel Usman">
+          </div>
+          <div class="form-group">
+            <label for="auth-email">Email Address</label>
+            <input type="email" id="auth-email" class="form-control" placeholder="ariel@au.edu" required>
+          </div>
+          <div class="form-group">
+            <label for="auth-password">Password</label>
+            <input type="password" id="auth-password" class="form-control" placeholder="••••••••" required>
+          </div>
+          
+          <button type="submit" id="auth-submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+            Sign In
+          </button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-secondary);">
+          <span id="auth-toggle-msg">Don't have an account?</span>
+          <a href="#" id="auth-toggle-link" onclick="toggleAuthMode(event)" style="color: var(--accent-teal); font-weight: bold; text-decoration: none;">
+            Sign Up
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- GENERATOR PANEL (Visible after logged in as Lecturer) -->
+    <section id="generator-panel" class="panel-section" style="display: none; max-width: 800px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2 style="font-size: 1.75rem; color: white;">AI Micro-LMS Curriculum Generator</h2>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+          Upload your syllabus document (RPS) in PDF, Word, Excel, or Text format to generate a complete student micro-site.
+        </p>
+      </div>
+
+      <div class="glass-panel" style="padding: 2.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div class="user-avatar" id="generator-user-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">U</div>
+            <span id="generator-welcome-text" style="font-size: 0.9rem; font-weight: bold; color: white;">Dr. Ariel Usman</span>
+          </div>
+          <button onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; color: var(--color-danger); border-color: rgba(239, 68, 68, 0.2);">
+            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+          </button>
+        </div>
+
+        <form id="create-course-form" onsubmit="handleCurriculumGeneration(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label for="course-name-input">Course Name</label>
+              <input type="text" id="course-name-input" class="form-control" placeholder="e.g. Advanced AI System Modeling" required>
+            </div>
+            <div class="form-group">
+              <label for="course-id-input">Unique Course ID (Code)</label>
+              <input type="text" id="course-id-input" class="form-control" placeholder="e.g. AU-AI-802" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Upload RPS Syllabus Document (PDF, DOCX, XLSX, TXT)</label>
+            <div id="dropzone" style="border: 2px dashed var(--border-color); border-radius: var(--radius-sm); padding: 2rem; text-align: center; background: rgba(255,255,255,0.01); cursor: pointer; transition: var(--transition-smooth);" onclick="document.getElementById('rps-file-input').click()">
+              <i class="fa-solid fa-file-arrow-up" style="font-size: 2.5rem; color: var(--accent-indigo); margin-bottom: 1rem;"></i>
+              <p id="dropzone-text">Click to choose or drag syllabus file here</p>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">Max file size: 10MB</span>
+              <input type="file" id="rps-file-input" style="display: none;" onchange="handleFileSelected(event)">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="additional-prompt-input">Additional Custom Directives (Optional)</label>
+            <textarea id="additional-prompt-input" class="form-control" style="height: 80px; resize: vertical;" placeholder="e.g. Add focus on ethical issues in AI in week 10. Focus essay prompt on case study analyses."></textarea>
+          </div>
+
+          <button type="submit" id="generate-curriculum-btn" class="btn btn-teal" style="width: 100%; margin-top: 1rem;">
+            <i class="fa-solid fa-bolt"></i> Generate 16-Week Curriculum
+          </button>
+        </form>
+
+        <!-- Loading progress bar -->
+        <div id="generation-loader" style="display: none; margin-top: 2rem; text-align: center;">
+          <div style="margin-bottom: 1rem; color: var(--accent-teal); font-weight: bold;" id="loader-status-text">Uploading and parsing file...</div>
+          <div style="background: rgba(255,255,255,0.05); height: 8px; border-radius: 4px; overflow: hidden; width: 100%;">
+            <div id="loader-progress-bar" style="background: linear-gradient(to right, var(--accent-indigo), var(--accent-teal)); height: 100%; width: 20%; transition: width 0.4s ease;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STUDENT HOMEPAGE (Visible after logged in as Student) -->
+    <section id="student-home-panel" class="panel-section" style="display: none; max-width: 600px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h2 style="font-size: 1.75rem; color: white;">Enroll in Classroom</h2>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 0.25rem;">
+          Enter the course ID provided by your lecturer to join their dynamic AU Learning micro-site.
+        </p>
+      </div>
+
+      <div class="glass-panel" style="padding: 2.5rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 2rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div class="user-avatar" id="student-user-avatar" style="width: 32px; height: 32px; font-size: 0.85rem;">S</div>
+            <span id="student-welcome-text" style="font-size: 0.9rem; font-weight: bold; color: white;">Ariel Rifky</span>
+          </div>
+          <button onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.8rem; color: var(--color-danger); border-color: rgba(239, 68, 68, 0.2);">
+            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+          </button>
+        </div>
+
+        <div class="form-group">
+          <label for="join-course-id">Course Code ID</label>
+          <input type="text" id="join-course-id" class="form-control" placeholder="e.g. AU-AI-802" required>
+        </div>
+
+        <button onclick="enrollInCourse()" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+          <i class="fa-solid fa-right-to-bracket"></i> Join Course Classroom
+        </button>
+
+        <div id="enrolled-courses-block" style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem; display: none;">
+          <h3 style="font-size: 1rem; color: white; margin-bottom: 1rem;">Your Enrolled Classrooms:</h3>
+          <div id="enrolled-courses-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <!-- Courses rendered dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Shared Branding Footer -->
+  <footer>
+    <p>&copy; 2026 AU Learning. All rights reserved.</p>
+    <span>Designed by <strong>Ariel Usman</strong> | Full-Stack Cloud Architecture & UI/UX</span>
+    <div class="footer-socials">
+      <a href="https://instagram.com/arielrcun" target="_blank" title="Instagram @arielrcun"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://instagram.com/madeai.ariel" target="_blank" title="Instagram @madeai.ariel"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://tiktok.com/@maybe.ariel5" target="_blank" title="TikTok @maybe.ariel5"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="https://tiktok.com/@madeai5" target="_blank" title="TikTok @madeai5"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="https://artriel-arch.github.io/" target="_blank" title="Creator Portfolio"><i class="fa-solid fa-globe"></i></a>
+      <a href="https://arielrifkycahyadi.github.io/" target="_blank" title="AI GitHub Projects"><i class="fa-solid fa-robot"></i></a>
+    </div>
+  </footer>
+
+  <!-- Application scripts -->
+  <script type="module" src="js/app.js"></script>
+
+  <!-- Global scripts definitions for inline events -->
+  <script>
+    function setAuthRole(role) {
+      window.appRouter?.setAuthRole(role);
+    }
+    function toggleAuthMode(event) {
+      event.preventDefault();
+      window.appRouter?.toggleAuthMode();
+    }
+    function handleAuthSubmit(event) {
+      window.appRouter?.handleAuthSubmit(event);
+    }
+    function handleSignOut() {
+      window.appRouter?.handleSignOut();
+    }
+    function handleFileSelected(event) {
+      window.appRouter?.handleFileSelected(event);
+    }
+    function handleCurriculumGeneration(event) {
+      window.appRouter?.handleCurriculumGeneration(event);
+    }
+    function enrollInCourse() {
+      window.appRouter?.enrollInCourse();
+    }
+  </script>
+</body>
+</html>
