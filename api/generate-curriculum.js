@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     );
 
     if (curriculum && curriculum.weeks) {
-      for (const week of curriculum.weeks) {
+      await Promise.all(curriculum.weeks.map(async (week) => {
         try {
           const searchQuery = week.youtubeSearchQuery || `${courseName} ${week.topic}`;
           week.youtubeVideos = await youtubeService.fetchVideosForQuery(searchQuery, ytApiKey);
@@ -34,7 +34,7 @@ export default async function handler(req, res) {
           console.error(`Failed YouTube fetch for Week ${week.weekNum}:`, ytErr.message);
           week.youtubeVideos = youtubeService.getMockVideos(week.topic);
         }
-      }
+      }));
     }
 
     const record = {
