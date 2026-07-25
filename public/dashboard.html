@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AU Learning Lecturer Console - Administration Dashboard</title>
+  
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Shared Branding Header -->
+  <header class="branding-header">
+    <div class="brand-info">
+      <div class="brand-logo">AU</div>
+      <div class="brand-text">
+        <h1>AU Learning Console</h1>
+        <span>Alternative Universe Learning by Ariel Usman</span>
+      </div>
+    </div>
+    
+    <!-- Creator Portfolio Badges -->
+    <div class="creator-socials">
+      <a href="https://instagram.com/arielrcun" target="_blank" class="social-badge">
+        <i class="fa-brands fa-instagram"></i> @arielrcun
+      </a>
+      <a href="https://instagram.com/madeai.ariel" target="_blank" class="social-badge">
+        <i class="fa-brands fa-instagram"></i> @madeai.ariel
+      </a>
+      <a href="https://tiktok.com/@maybe.ariel5" target="_blank" class="social-badge">
+        <i class="fa-brands fa-tiktok"></i> @maybe.ariel5
+      </a>
+      <a href="https://artriel-arch.github.io/" target="_blank" class="social-badge">
+        <i class="fa-solid fa-globe"></i> Portfolio
+      </a>
+      <a href="https://arielrifkycahyadi.github.io/" target="_blank" class="social-badge">
+        <i class="fa-solid fa-robot"></i> AI GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast-msg">
+    <i id="toast-icon" class="fa-solid"></i>
+    <span id="toast-text">Success message</span>
+  </div>
+
+  <!-- Dashboard Container -->
+  <div class="app-container">
+    
+    <!-- Sidebar navigation -->
+    <aside class="sidebar">
+      <ul class="nav-links">
+        <li class="nav-item active" id="nav-dash-overview">
+          <button onclick="switchDashTab('overview')">
+            <i class="fa-solid fa-chart-simple"></i> Analytics
+          </button>
+        </li>
+        <li class="nav-item" id="nav-dash-editor">
+          <button onclick="switchDashTab('editor')">
+            <i class="fa-solid fa-pen-to-square"></i> No-Code Editor
+          </button>
+        </li>
+        <li class="nav-item" id="nav-dash-grading">
+          <button onclick="switchDashTab('grading')">
+            <i class="fa-solid fa-graduation-cap"></i> AI Grader Review
+          </button>
+        </li>
+        <li class="nav-item" id="nav-dash-broadcaster">
+          <button onclick="switchDashTab('broadcaster')">
+            <i class="fa-solid fa-tower-broadcast"></i> Micro-Polling
+          </button>
+        </li>
+      </ul>
+
+      <!-- User Widget -->
+      <div class="user-profile-section glass-panel" style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; margin-top: auto;">
+        <div class="user-avatar" id="lecturer-avatar" style="width: 36px; height: 36px; font-size: 0.9rem;">U</div>
+        <div class="user-details">
+          <h3 id="lecturer-name" style="font-size: 0.85rem; color: white;">Dr. Ariel Usman</h3>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Lecturer</span>
+        </div>
+        <button onclick="goToPortal()" style="background: none; border: none; color: var(--color-warning); cursor: pointer; margin-left: auto; font-size: 1rem;" title="Back to Portal">
+          <i class="fa-solid fa-home"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Workspace Content -->
+    <main class="main-content">
+      
+      <!-- Course Selector Widget -->
+      <div class="dashboard-header" style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); padding: 1rem 1.5rem; border-radius: 8px; border: 1px solid var(--border-color);">
+        <div>
+          <h2 style="font-size: 1.15rem; color: white;">Active Administration Workspace</h2>
+          <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.15rem;">Select which generated course outcomes and files to manage.</p>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <select id="lecturer-course-selector" class="form-control" style="width: 260px; background: var(--bg-primary);" onchange="handleCourseSelection(this.value)">
+            <!-- Populated dynamically -->
+          </select>
+          <button onclick="copyLMSIntegration()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;"><i class="fa-solid fa-share-nodes"></i> Copy LENTERA Embed</button>
+        </div>
+      </div>
+
+      <!-- 1. ANALYTICS & EXPORTS TAB -->
+      <section id="dash-tab-overview" class="dash-tab-panel">
+        <!-- Bento Cards for stats -->
+        <div class="bento-grid" style="margin-bottom: 2rem;">
+          <div class="bento-card glass-panel col-3">
+            <div>
+              <div class="card-icon icon-indigo"><i class="fa-solid fa-user-group"></i></div>
+              <div class="card-title">Enrolled Students</div>
+              <div class="card-value" id="stat-students-count">0</div>
+            </div>
+            <div class="card-footer">Attending active micro-polls</div>
+          </div>
+          
+          <div class="bento-card glass-panel col-3">
+            <div>
+              <div class="card-icon icon-teal"><i class="fa-solid fa-list-check"></i></div>
+              <div class="card-title">Graded Assignments</div>
+              <div class="card-value" id="stat-graded-count">0</div>
+            </div>
+            <div class="card-footer">Processed via AI rubrics</div>
+          </div>
+
+          <div class="bento-card glass-panel col-3">
+            <div>
+              <div class="card-icon icon-pink"><i class="fa-solid fa-clock-rotate-left"></i></div>
+              <div class="card-title">Average Attendance</div>
+              <div class="card-value" id="stat-att-rate">100%</div>
+            </div>
+            <div class="card-footer">Calculated from logs</div>
+          </div>
+
+          <div class="bento-card glass-panel col-3">
+            <div>
+              <div class="card-icon icon-purple"><i class="fa-solid fa-file-export"></i></div>
+              <div class="card-title">Export Audit Records</div>
+              <div style="display: flex; gap: 0.5rem; margin-top: 0.75rem;">
+                <button onclick="exportReport('excel')" class="btn btn-secondary" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;"><i class="fa-solid fa-file-excel"></i> Excel</button>
+                <button onclick="exportReport('pdf')" class="btn btn-secondary" style="flex: 1; padding: 0.4rem; font-size: 0.75rem;"><i class="fa-solid fa-file-pdf"></i> PDF</button>
+              </div>
+            </div>
+            <div class="card-footer">Export performance logs</div>
+          </div>
+
+          <!-- Radar Chart attainment -->
+          <div class="bento-card glass-panel col-6" style="height: 380px;">
+            <h3 style="font-size: 1rem; color: white; margin-bottom: 0.75rem;"><i class="fa-solid fa-chart-line"></i> Outcomes Attainment (CPMK)</h3>
+            <div style="flex: 1; position: relative; height: 100%; display: flex; align-items: center; justify-content: center;">
+              <canvas id="cpmkRadarChart" style="max-height: 280px; max-width: 280px;"></canvas>
+            </div>
+          </div>
+
+          <!-- Bar Chart attainment -->
+          <div class="bento-card glass-panel col-6" style="height: 380px;">
+            <h3 style="font-size: 1rem; color: white; margin-bottom: 0.75rem;"><i class="fa-solid fa-chart-bar"></i> Performance Distributions</h3>
+            <div style="flex: 1; position: relative; height: 100%; display: flex; align-items: center; justify-content: center;">
+              <canvas id="scoresBarChart" style="max-height: 280px;"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. NO-CODE VISUAL SYLLABUS EDITOR -->
+      <section id="dash-tab-editor" class="dash-tab-panel" style="display: none;">
+        <div class="glass-panel" style="padding: 2.25rem;">
+          <div style="border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h3 style="font-size: 1.25rem; color: white;"><i class="fa-solid fa-pen-to-square"></i> Course Document Editor</h3>
+              <p style="font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.15rem;">Visually update goals, weekly scopes, and rubrics stored in Firestore.</p>
+            </div>
+            <button onclick="saveCourseEdits()" class="btn btn-teal"><i class="fa-solid fa-floppy-disk"></i> Commit Course Updates</button>
+          </div>
+
+          <form id="nocode-editor-form">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+              <div>
+                <h4 style="font-size: 0.9rem; color: var(--accent-indigo); margin-bottom: 1rem;">Course Learning Outcomes (CPMK)</h4>
+                <div id="editor-cpmk-inputs" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                  <!-- Dynamically populated textarea boxes -->
+                </div>
+                <button type="button" onclick="addEditorCPMKRow()" class="btn btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem; margin-top: 0.5rem;"><i class="fa-solid fa-plus"></i> Add CPMK</button>
+              </div>
+
+              <div>
+                <h4 style="font-size: 0.9rem; color: var(--accent-pink); margin-bottom: 1rem;">Essay rubrics / weightages</h4>
+                <div id="editor-rubric-inputs" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                  <!-- Rubric row maps inputs -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Weeks detail list visual nodes -->
+            <h4 style="font-size: 0.95rem; color: white; margin-bottom: 1rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">Syllabus Weekly Outlines (16 Weeks)</h4>
+            <div id="editor-weeks-list" style="display: flex; flex-direction: column; gap: 1rem; max-height: 500px; overflow-y: auto; padding-right: 0.5rem;">
+              <!-- Week items editor layouts -->
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- 3. AI GRADER INSPECTOR REVIEW -->
+      <section id="dash-tab-grading" class="dash-tab-panel" style="display: none;">
+        <div style="display: grid; grid-template-columns: 320px 1fr; gap: 2rem;">
+          <!-- Submissions List -->
+          <div class="glass-panel" style="padding: 1.5rem; height: 550px; display: flex; flex-direction: column;">
+            <h3 style="font-size: 1rem; color: white; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+              Student Submissions
+            </h3>
+            <div style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 0.75rem;" id="dash-submissions-list">
+              <div style="color: var(--text-muted); text-align: center; margin-top: 5rem;">No answers graded yet.</div>
+            </div>
+          </div>
+
+          <!-- Grading Inspector details -->
+          <div class="glass-panel" style="padding: 2rem; height: 550px; overflow-y: auto;" id="dash-grading-inspector">
+            <div style="color: var(--text-muted); text-align: center; margin-top: 10rem;">
+              <i class="fa-solid fa-magnifying-glass" style="font-size: 3rem; margin-bottom: 1.5rem;"></i>
+              <p>Select a submission from the list to display auto-graded outcomes breakdown.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. MICRO-POLLING ATTENDANCE CONTROLLER -->
+      <section id="dash-tab-broadcaster" class="dash-tab-panel" style="display: none;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+          <!-- Polling Launcher -->
+          <div class="glass-panel" style="padding: 2rem;">
+            <h3 style="font-size: 1.2rem; color: var(--accent-teal); margin-bottom: 1rem;"><i class="fa-solid fa-tower-broadcast"></i> Start a Micro-Poll</h3>
+            <form id="start-poll-form" onsubmit="handleStartPoll(event)">
+              <div class="form-group">
+                <label for="poll-question">Verification question / session prompt</label>
+                <input type="text" id="poll-question" class="form-control" value="Verification check: Respond present to confirm active study participation." required>
+              </div>
+              <div class="form-group">
+                <label for="poll-duration">Active duration (seconds)</label>
+                <select id="poll-duration" class="form-control">
+                  <option value="15">15 Seconds</option>
+                  <option value="30">30 Seconds</option>
+                  <option value="60">60 Seconds</option>
+                </select>
+              </div>
+              <button type="submit" id="start-poll-btn" class="btn btn-teal" style="width: 100%; margin-top: 1rem;">
+                <i class="fa-solid fa-play"></i> Trigger Micro-Poll Popup
+              </button>
+            </form>
+
+            <!-- Active broadcaster info -->
+            <div id="active-poll-details" style="display: none; margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1.5rem;">
+              <h4 style="color: white; margin-bottom: 0.5rem;">Active Broadcast</h4>
+              <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;" id="active-poll-name">Attendance Check</div>
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <span id="active-poll-timer" style="font-weight: bold; color: var(--color-warning); font-size: 1.5rem;">00:15</span>
+                <button onclick="stopActivePoll()" class="btn btn-secondary" style="color: var(--color-danger); border-color: var(--color-danger); padding: 0.4rem 0.8rem; font-size: 0.85rem;">
+                  <i class="fa-solid fa-stop"></i> Stop Broadcast
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Real-time Attendance verified list -->
+          <div class="glass-panel" style="padding: 2rem;">
+            <h3 style="font-size: 1.2rem; color: white; margin-bottom: 1.5rem;"><i class="fa-solid fa-users"></i> Live Attendees (<span id="attendee-count">0</span>)</h3>
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 380px; overflow-y: auto;" id="live-attendees-list">
+              <div style="color: var(--text-muted); text-align: center; padding-top: 5rem;">No active logs. Broadcast a poll to sync attendees.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Shared Branding Footer -->
+  <footer>
+    <p>&copy; 2026 AU Learning. All rights reserved.</p>
+    <span>Designed by <strong>Ariel Usman</strong> | Full-Stack Cloud Architecture & UI/UX</span>
+    <div class="footer-socials">
+      <a href="https://instagram.com/arielrcun" target="_blank" title="Instagram @arielrcun"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://instagram.com/madeai.ariel" target="_blank" title="Instagram @madeai.ariel"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://tiktok.com/@maybe.ariel5" target="_blank" title="TikTok @maybe.ariel5"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="https://tiktok.com/@madeai5" target="_blank" title="TikTok @madeai5"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="https://artriel-arch.github.io/" target="_blank" title="Creator Portfolio"><i class="fa-solid fa-globe"></i></a>
+      <a href="https://arielrifkycahyadi.github.io/" target="_blank" title="AI GitHub Projects"><i class="fa-solid fa-robot"></i></a>
+    </div>
+  </footer>
+
+  <!-- Application scripts -->
+  <script type="module" src="js/app.js"></script>
+
+  <!-- Global scripts definitions for inline events -->
+  <script>
+    function goToPortal() {
+      window.location.href = 'index.html';
+    }
+    function switchDashTab(tabId) {
+      window.appRouter?.switchDashTab(tabId);
+    }
+    function handleCourseSelection(courseId) {
+      window.appRouter?.handleCourseSelection(courseId);
+    }
+    function handleStartPoll(event) {
+      window.appRouter?.handleStartPoll(event);
+    }
+    function stopActivePoll() {
+      window.appRouter?.stopActivePoll();
+    }
+    function exportReport(type) {
+      window.appRouter?.exportReport(type);
+    }
+    function copyLMSIntegration() {
+      window.appRouter?.copyLMSIntegration();
+    }
+    function saveCourseEdits() {
+      window.appRouter?.saveCourseEdits();
+    }
+    function addEditorCPMKRow() {
+      window.appRouter?.addEditorCPMKRow();
+    }
+  </script>
+</body>
+</html>
