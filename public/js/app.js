@@ -34,14 +34,14 @@ class AppRouter {
     await this.checkSession();
     
     // Page specific initializations
-    const path = window.location.pathname;
-    if (path.endsWith('index.html') || path.endsWith('/')) {
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes('lms')) {
+      this.loadLmsViews();
+    } else if (path.includes('dashboard')) {
+      this.loadDashboardViews();
+    } else {
       this.bindDropzone();
       this.loadIndexViews();
-    } else if (path.endsWith('lms.html')) {
-      this.loadLmsViews();
-    } else if (path.endsWith('dashboard.html')) {
-      this.loadDashboardViews();
     }
   }
 
@@ -131,13 +131,13 @@ class AppRouter {
       this.showToast(`Logged in as ${this.state.activeUser.name}`, 'success');
       
       // Refresh views based on path
-      const path = window.location.pathname;
-      if (path.endsWith('index.html') || path.endsWith('/')) {
+      const path = window.location.pathname.toLowerCase();
+      if (path.includes('lms')) {
+        window.location.reload();
+      } else if (path.includes('dashboard')) {
+        window.location.reload();
+      } else {
         this.loadIndexViews();
-      } else if (path.endsWith('lms.html')) {
-        window.location.reload();
-      } else if (path.endsWith('dashboard.html')) {
-        window.location.reload();
       }
     } catch (err) {
       this.showToast(err.message, 'error');
@@ -151,10 +151,12 @@ class AppRouter {
     this.state.activeCourse = null;
     
     // Redirect to home portal
-    if (window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/')) {
-      this.loadIndexViews();
-    } else {
+    // Redirect to home portal
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes('lms') || path.includes('dashboard')) {
       window.location.href = 'index.html';
+    } else {
+      this.loadIndexViews();
     }
   }
 
