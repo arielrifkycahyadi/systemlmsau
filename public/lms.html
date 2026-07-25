@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AU Learning Classroom - Student Micro-Site</title>
+  
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Shared Branding Header -->
+  <header class="branding-header">
+    <div class="brand-info">
+      <div class="brand-logo">AU</div>
+      <div class="brand-text">
+        <h1 id="brand-course-title">AU Learning</h1>
+        <span id="brand-course-id">Alternative Universe Learning by Ariel Usman</span>
+      </div>
+    </div>
+    
+    <!-- Creator Portfolio Badges -->
+    <div class="creator-socials">
+      <a href="https://instagram.com/arielrcun" target="_blank" class="social-badge">
+        <i class="fa-brands fa-instagram"></i> @arielrcun
+      </a>
+      <a href="https://instagram.com/madeai.ariel" target="_blank" class="social-badge">
+        <i class="fa-brands fa-instagram"></i> @madeai.ariel
+      </a>
+      <a href="https://tiktok.com/@maybe.ariel5" target="_blank" class="social-badge">
+        <i class="fa-brands fa-tiktok"></i> @maybe.ariel5
+      </a>
+      <a href="https://artriel-arch.github.io/" target="_blank" class="social-badge">
+        <i class="fa-solid fa-globe"></i> Portfolio
+      </a>
+      <a href="https://arielrifkycahyadi.github.io/" target="_blank" class="social-badge">
+        <i class="fa-solid fa-robot"></i> AI GitHub
+      </a>
+    </div>
+  </header>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="toast-msg">
+    <i id="toast-icon" class="fa-solid"></i>
+    <span id="toast-text">Success message</span>
+  </div>
+
+  <!-- Classroom Dashboard Wrapper -->
+  <div class="app-container">
+    
+    <!-- Left Navigation Bar -->
+    <aside class="sidebar">
+      <ul class="nav-links">
+        <li class="nav-item active" id="nav-lms-curriculum">
+          <button onclick="switchLMSTab('curriculum')">
+            <i class="fa-solid fa-book-open"></i> Curriculum
+          </button>
+        </li>
+        <li class="nav-item" id="nav-lms-webrtc">
+          <button onclick="switchLMSTab('webrtc')">
+            <i class="fa-solid fa-video"></i> WebRTC Class
+          </button>
+        </li>
+        <li class="nav-item" id="nav-lms-grades">
+          <button onclick="switchLMSTab('grades')">
+            <i class="fa-solid fa-square-poll-vertical"></i> Grades & Reports
+          </button>
+        </li>
+      </ul>
+
+      <!-- User Widget -->
+      <div class="user-profile-section glass-panel" style="display: flex; align-items: center; gap: 0.75rem; padding: 1rem; margin-top: auto;">
+        <div class="user-avatar" id="student-avatar" style="width: 36px; height: 36px; font-size: 0.9rem;">S</div>
+        <div class="user-details">
+          <h3 id="student-name" style="font-size: 0.85rem; color: white;">Ariel Rifky</h3>
+          <span style="font-size: 0.75rem; color: var(--text-muted);">Student</span>
+        </div>
+        <button onclick="goToPortal()" style="background: none; border: none; color: var(--color-warning); cursor: pointer; margin-left: auto; font-size: 1rem;" title="Back to Portal">
+          <i class="fa-solid fa-home"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Workspace Panel Content -->
+    <main class="main-content">
+      
+      <!-- 1. CURRICULUM TAB -->
+      <section id="lms-tab-curriculum" class="lms-tab-panel">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+          <div>
+            <h2 id="lms-course-name" style="font-size: 1.5rem; color: white;">Course Topics Outline</h2>
+            <p style="color: var(--text-secondary); font-size: 0.9rem;">Complete your tasks week-by-week. Click a week header to expand contents.</p>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 280px 1fr; gap: 2rem;">
+          <!-- Course Outcomes Info -->
+          <div class="glass-panel" style="padding: 1.5rem; height: fit-content;">
+            <h3 style="font-size: 1rem; color: var(--accent-indigo); margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+              <i class="fa-solid fa-award"></i> Outcomes (CPMK)
+            </h3>
+            <ul id="lms-cpmk-list" style="list-style: none; font-size: 0.8rem; display: flex; flex-direction: column; gap: 0.5rem; color: var(--text-primary);">
+              <li>No course objectives mapped.</li>
+            </ul>
+          </div>
+
+          <!-- Weeks accordion -->
+          <div style="display: flex; flex-direction: column; gap: 1rem;" id="lms-weeks-container">
+            <div style="text-align: center; color: var(--text-muted); padding: 5rem;">Loading curriculum modules...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. WEBRTC MEETING TAB -->
+      <section id="lms-tab-webrtc" class="lms-tab-panel" style="display: none;">
+        <div style="margin-bottom: 1.5rem;">
+          <h2 style="font-size: 1.5rem; color: white;"><i class="fa-solid fa-video" style="color: var(--accent-indigo);"></i> Live Classroom Stream</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Participate in real-time video lectures proctored by your instructor. Remain active to trigger micro-polling logs.</p>
+        </div>
+
+        <!-- Jitsi iframe container -->
+        <div class="video-meeting-container glass-panel" style="padding: 1rem; height: 550px;">
+          <div class="video-frame-wrapper" id="jitsi-iframe-container" style="height: 100%;">
+            <!-- Rendered dynamically -->
+          </div>
+          
+          <!-- Live Poll Stats Sidebar -->
+          <div style="display: flex; flex-direction: column; justify-content: space-between; border-left: 1px solid var(--border-color); padding-left: 1rem;">
+            <div>
+              <h3 style="font-size: 0.95rem; color: white; margin-bottom: 0.75rem;"><i class="fa-solid fa-tower-broadcast" style="color: var(--accent-teal);"></i> Attendance Verification</h3>
+              <p style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 1rem;">
+                During live classes, lecturers issue real-time presence micro-polls. Students have 15-30s to respond before the window closes.
+              </p>
+            </div>
+            
+            <div class="glass-panel" style="padding: 1rem; text-align: center; background: rgba(0,0,0,0.15);">
+              <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">Your Attendance Rate</span>
+              <div id="lms-webrtc-attendance-pct" style="font-size: 2.25rem; font-weight: 800; font-family: var(--font-title); color: var(--accent-teal); margin-top: 0.25rem;">0%</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. GRADEBOOK & REPORTS TAB -->
+      <section id="lms-tab-grades" class="lms-tab-panel" style="display: none;">
+        <div style="margin-bottom: 2rem;">
+          <h2 style="font-size: 1.5rem; color: white;"><i class="fa-solid fa-list-check" style="color: var(--accent-pink);"></i> Evaluation Gradebook</h2>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Review submitted assignment grades and comments compiled by the AI Auto-Grader.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 320px 1fr; gap: 2rem;">
+          <!-- Submissions list -->
+          <div class="glass-panel" style="padding: 1.5rem; height: 500px; display: flex; flex-direction: column;">
+            <h3 style="font-size: 0.95rem; color: white; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+              Submitted Assessments
+            </h3>
+            <div style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 0.5rem;" id="lms-submissions-list">
+              <div style="color: var(--text-muted); text-align: center; margin-top: 5rem;">No submissions yet.</div>
+            </div>
+          </div>
+
+          <!-- Evaluation Report Inspector -->
+          <div class="glass-panel" style="padding: 2rem; height: 500px; overflow-y: auto;" id="lms-grading-inspector">
+            <div style="color: var(--text-muted); text-align: center; margin-top: 8rem;">
+              <i class="fa-solid fa-magnifying-glass" style="font-size: 3rem; margin-bottom: 1.5rem;"></i>
+              <p>Select a graded submission from the side panel to view detailed AI feedback.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- FLOATING LIVE ATTENDANCE POPUP BANNER FOR STUDENTS -->
+  <div id="live-poll-banner" class="live-poll-banner glass-panel">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem;">
+      <h4 style="color: white; font-size: 0.95rem;"><i class="fa-solid fa-tower-broadcast" style="color: var(--accent-teal);"></i> Attendance Check</h4>
+      <span id="student-poll-time" style="font-weight: bold; color: var(--color-warning); font-size: 0.85rem;">15s</span>
+    </div>
+    <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;" id="student-poll-question">
+      An attendance verification is currently active.
+    </p>
+    <button onclick="submitStudentAttendance(true)" class="btn btn-teal" style="width: 100%; padding: 0.5rem 1rem; font-size: 0.8rem;">
+      <i class="fa-solid fa-check"></i> Click to Verify Presence
+    </button>
+    <div id="poll-timer-bar" class="poll-timer-bar"></div>
+  </div>
+
+  <!-- ASSIGNMENT SUBMISSION MODAL -->
+  <div id="assignment-modal" class="modal-overlay">
+    <div class="modal-content glass-panel">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h3 id="modal-title" style="color: white; font-size: 1.15rem;">Task Assessment</h3>
+        <button onclick="closeAssignmentModal()" style="background: none; border: none; color: var(--text-secondary); font-size: 1.25rem; cursor: pointer;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      
+      <div id="modal-assignment-description" style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.5;">
+        Assignment prompt placeholder.
+      </div>
+
+      <div id="modal-input-container">
+        <!-- Textarea or Radio questions rendered dynamically -->
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 2rem;">
+        <button onclick="closeAssignmentModal()" class="btn btn-secondary">Cancel</button>
+        <button id="modal-submit-btn" onclick="submitAssignmentFromModal()" class="btn btn-primary">Submit Answers</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Branding Footer -->
+  <footer>
+    <p>&copy; 2026 AU Learning. All rights reserved.</p>
+    <span>Designed by <strong>Ariel Usman</strong> | Full-Stack Cloud Architecture & UI/UX</span>
+    <div class="footer-socials">
+      <a href="https://instagram.com/arielrcun" target="_blank" title="Instagram @arielrcun"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://instagram.com/madeai.ariel" target="_blank" title="Instagram @madeai.ariel"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://tiktok.com/@maybe.ariel5" target="_blank" title="TikTok @maybe.ariel5"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="https://tiktok.com/@madeai5" target="_blank" title="TikTok @madeai5"><i class="fa-brands fa-tiktok"></i></a>
+      <a href="https://artriel-arch.github.io/" target="_blank" title="Creator Portfolio"><i class="fa-solid fa-globe"></i></a>
+      <a href="https://arielrifkycahyadi.github.io/" target="_blank" title="AI GitHub Projects"><i class="fa-solid fa-robot"></i></a>
+    </div>
+  </footer>
+
+  <!-- Application scripts -->
+  <script type="module" src="js/app.js"></script>
+
+  <!-- Global scripts definitions for inline events -->
+  <script>
+    function goToPortal() {
+      window.location.href = 'index.html';
+    }
+    function switchLMSTab(tabId) {
+      window.appRouter?.switchLMSTab(tabId);
+    }
+    function openAssignmentModal(weekNum, assignmentIndex) {
+      window.appRouter?.openAssignmentModal(weekNum, assignmentIndex);
+    }
+    function closeAssignmentModal() {
+      window.appRouter?.closeAssignmentModal();
+    }
+    function submitAssignmentFromModal() {
+      window.appRouter?.submitAssignmentFromModal();
+    }
+    function submitStudentAttendance(present) {
+      window.appRouter?.submitStudentAttendance(present);
+    }
+    function toggleWeekAccordion(weekNum) {
+      const el = document.getElementById(`week-details-${weekNum}`);
+      if (el) el.classList.toggle('show');
+    }
+  </script>
+</body>
+</html>
